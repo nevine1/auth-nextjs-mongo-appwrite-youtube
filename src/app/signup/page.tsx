@@ -1,11 +1,12 @@
 "use client"
-import React, { useState} from 'react'
+import React, { useState, useEffect} from 'react'
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { Formik, Form } from 'formik';
 import { TextField, Button, Box, Typography } from '@mui/material';
-import validationSchema from '../../helpers/validationSchema';
+import { validationSchema } from '../../helpers/validationSchema';
+import toast from 'react-hot-toast';
 
 interface FormValues  {
     email: string;
@@ -18,17 +19,32 @@ interface FormValues  {
     const [user, setUser] = useState({
         username: "", email: " ", password: "",
     })
+    const [isLoading, setIsLoading] = useState(false);
+
     const initialValues: FormValues = {
         username: '', 
         email: ' ', 
         password: '',
     }
-    const handleSubmit =(values: FormValues) =>{
+    const handleSubmit =async (values: FormValues) =>{
         console.log(values)
+       
+        try{
+          setIsLoading(true);
+          const response = await axios.post(`/api/users/signup`, user);//user defined at the top (username, password, email)
+          console.log("signup success", response.data);// to know what type of data is coming up
+          router.push('/login')
+        }catch(error: any){
+          console.log(`Signup failed ${error.message}` );
+          toast(error.message);
+        }finally{
+          setIsLoading(false);
+        }
     }
    return (
     <Box
       sx={{
+        marginTop: '150px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -50,9 +66,9 @@ interface FormValues  {
       >
         <Typography component="h1" variant="h5" align="center"
           gutterBottom
-          className="text-slate-900 text-[22px] mb-4"
+          className="text-slate-900 text-[22px] mt-6"
         >
-          New Patient Register Form
+          sign up
         </Typography>
         <Formik
           initialValues={initialValues}
@@ -94,7 +110,7 @@ interface FormValues  {
               <Box mb={2}>
                 <TextField
                     fullWidth
-                    id=""
+                    id="password"
                     label="Password"
                     type="password"
                     variant="standard"
