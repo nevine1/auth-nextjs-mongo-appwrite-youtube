@@ -4,13 +4,10 @@ interface Props {
     
 }
 
-const page = (props: Props) => {
+export const userProfile = (props: Props) => {
     return (
         <div>
-            <h2>api signup pageeeeeeeeeeee</h2>
+            <h1>Hello user profile </h1>
         </div>
     )
 }
-
-
-export default page;
